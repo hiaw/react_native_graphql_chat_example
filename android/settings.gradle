@@ -1,0 +1,3 @@
+rootProject.name = 'slack_clone'
+
+include ':app'
