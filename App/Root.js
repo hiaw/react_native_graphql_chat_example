@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import LoginContainer from './Components/ChannelView.js'
+import LoginContainer from './Components/LoginContainer.js'
 import { ApolloContainer } from './Components/ApolloContainer.js'
 
 export default class Root extends Component {
