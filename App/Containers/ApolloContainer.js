@@ -8,7 +8,7 @@ import addGraphQLSubscriptions from './addGraphQLSubscriptions.js'
 
 const serverUrl = 'us-west-2.api.scaphold.io/graphql/panicky-bait'
 const graphqlUrl = `https://${serverUrl}`
-const networkInterface = createNetworkInterface(graphqlUrl)
+const networkInterface = createNetworkInterface({uri: graphqlUrl})
 
 const logErrors = {
   applyAfterware ({ response }, next) {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { graphql } from 'react-apollo'
+import { graphql, compose } from 'react-apollo'
 import gql from 'graphql-tag'
 
 import ChannelView from '../Components/ChannelView.js'
@@ -40,20 +40,27 @@ const ChannelQuery = gql`
   }
 `
 
-export default class ChannelContainer extends React.Component {
-  render () {
-    let options = {
-      options: {
+const ChannelContainer = compose(
+  graphql(ChannelQuery, {
+    options: (props) => {
+      return {
+        returnPartialData: true,
         variables: {
-          id: this.props.id
+          id: props.id
         }
       }
     }
+  })
+)(Channel)
 
-    let ViewWithData = graphql(ChannelQuery, options)(Channel)
+export default ChannelContainer
 
-    return (
-      <ViewWithData />
-    )
-  }
-}
+/* subscription SubscribeToNewMessage($messageFilter: MessageWhereArgs) {
+ *     subscribeToNewMessage(mutations:[createMessage], where: $messageFilter) {
+ *         mutation
+ *         value {
+ *             id
+ *             content
+ *         }
+ *     }
+ * } */
