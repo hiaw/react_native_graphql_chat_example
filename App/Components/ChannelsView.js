@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Button, AlertIOS } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
+import { Actions } from 'react-native-router-flux'
 
 import createChannel from '../Auth/CreateChannel.js'
 
@@ -12,7 +13,7 @@ export default class ChannelsView extends React.Component {
   }
 
   goToChannel (id) {
-    console.log('Going to channel ' + id)
+    Actions.channelView({id: id})
   }
 
   render () {
@@ -36,6 +37,7 @@ export default class ChannelsView extends React.Component {
 const styles = {
   container: {
     flex: 1,
+    marginTop: 60,
     backgroundColor: 'lightblue'
   }
 }

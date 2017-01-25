@@ -10,14 +10,18 @@ export default class ChannelView extends Component {
   @observable newMessage = 'New Message'
 
   render () {
+    let messages = this.props.getChannel.messages.edges.map((message) => (
+      <MessageView content={message.node.content} />
+    ))
     return (
       <View style={styles.container}>
         <View style={styles.msgContainer}>
-          <MessageView {...this.props} />
+          {messages}
         </View>
 
         <View style={styles.row}>
           <TextInput
+            multiline = {true}
             style={styles.textInput}
             placeholder='Message'
             defaultValue={this.newMessage}
@@ -54,7 +58,8 @@ const styles = {
   },
   textInput: {
     flex: 1,
-    height: 40,
+    height: 100,
+    fontSize: 18,
     borderColor: 'gray',
     borderWidth: 1,
     borderRadius: 5,
