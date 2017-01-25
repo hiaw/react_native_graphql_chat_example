@@ -1,5 +1,7 @@
 import React from 'react'
-import { ListView, View, Text, Button } from 'react-native'
+import { ListView, View, Text, Button, AlertIOS } from 'react-native'
+
+import createChannel from '../Auth/CreateChannel.js'
 
 export default class CommentsView extends React.Component {
   constructor (props) {
@@ -14,6 +16,9 @@ export default class CommentsView extends React.Component {
   }
 
   createChannel () {
+    AlertIOS.prompt('Channel name', 'Give the new channel a name',
+      text => createChannel(text)
+    )
   }
 
   render () {
@@ -23,7 +28,7 @@ export default class CommentsView extends React.Component {
           dataSource={this.state.dataSource}
           renderRow={(rowData) => <Text>{rowData}</Text>}
       />
-        <Button title='Create Channel' onPress={() => this.setModalVisible(true)} />
+        <Button title='Create Channel' onPress={() => this.createChannel(true)} />
       </View>
     )
   }
