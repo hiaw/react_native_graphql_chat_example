@@ -29,6 +29,7 @@ const UserQuery = gql`
         channels {
           edges {
             node {
+              id
               name
               members {
                 aggregations {
