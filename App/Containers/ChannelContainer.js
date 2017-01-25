@@ -5,6 +5,8 @@ import gql from 'graphql-tag'
 
 import ChannelView from '../Components/ChannelView.js'
 
+import store from '../Model/MainStore.js'
+
 class Channel extends React.Component {
   render () {
     const { loading, getChannel, error } = this.props.data
@@ -16,7 +18,7 @@ class Channel extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      return <ChannelView data={this.props.data} getChannel={getChannel} />
+      return <ChannelView {...this.props} getChannel={getChannel} />
     }
   }
 }
@@ -40,6 +42,16 @@ const ChannelQuery = gql`
   }
 `
 
+const CreateMessageMutation = gql`
+  mutation CreateMessage ($input: CreateMessageInput!){
+    createMessage (input: $input) {
+      changedMessage {
+        id
+      }
+    }
+  }
+`
+
 const ChannelContainer = compose(
   graphql(ChannelQuery, {
     options: (props) => {
@@ -50,6 +62,15 @@ const ChannelContainer = compose(
         }
       }
     }
+  }),
+  graphql(CreateMessageMutation, {
+    props: ({ mutate }) => ({
+      createMessage: (channelId, content) => mutate({ variables: { input: {
+        authorId: store.userDevice.scaphold_user_id,
+        channelId: channelId,
+        content: content
+      }} })
+    })
   })
 )(Channel)
 

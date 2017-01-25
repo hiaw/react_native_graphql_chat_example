@@ -5,14 +5,12 @@ import { observer } from 'mobx-react'
 
 import MessageView from './MessageView.js'
 
-import createMessage from '../Auth/CreateMessage.js'
-
 @observer
 export default class ChannelView extends Component {
   @observable newMessage = 'New Message'
 
   sendMessage() {
-    createMessage(this.props.getChannel.id, this.newMessage)
+    this.props.createMessage(this.props.getChannel.id, this.newMessage)
       .then((res) => {
         this.props.data.refetch()
       })
