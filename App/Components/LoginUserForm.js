@@ -1,12 +1,19 @@
 import React, { Component } from 'react'
 import { View, TextInput, Button } from 'react-native'
-import { observable } from 'mobx'
+import { observable, computed } from 'mobx'
 import { observer } from 'mobx-react'
 
 @observer
 export default class LoginUserForm extends Component {
+  @observable registering = false
   @observable loginEmail = 'test@test.com'
   @observable loginPassword = '123456'
+  @computed get buttonText() {
+    return this.registering? 'Register' : 'Login'
+  }
+  @computed get alternateButtonText() {
+    return this.registering? 'Already Registered?' : 'Not yet registered?'
+  }
 
   loginUser () {
     this.props.loginUser(this.state.loginEmail, this.state.loginPassword)
@@ -30,7 +37,11 @@ export default class LoginUserForm extends Component {
         />
         <Button
           onPress={() => this.loginUser()}
-          title='Login'
+          title={this.buttonText}
+        />
+        <Button
+          onPress={() => this.registering = !this.registering}
+          title={this.alternateButtonText}
         />
       </View>
     )
