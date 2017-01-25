@@ -2,14 +2,13 @@ import React, { Component } from 'react'
 
 import ApolloClient, { createNetworkInterface } from 'apollo-client'
 import { ApolloProvider } from 'react-apollo'
+import { Client } from 'subscriptions-transport-ws'
 
-const serverUrl = 'https://us-west-2.api.scaphold.io/graphql/panicky-bait'
+import addGraphQLSubscriptions from './addGraphQLSubscriptions.js'
 
-let scapholdToken = ''
-
-const networkInterface = createNetworkInterface({uri: serverUrl})
-
-let client = new ApolloClient({networkInterface})
+const serverUrl = 'us-west-2.api.scaphold.io/graphql/panicky-bait'
+const graphqlUrl = `https://${serverUrl}`
+const networkInterface = createNetworkInterface(graphqlUrl)
 
 const logErrors = {
   applyAfterware ({ response }, next) {
@@ -59,6 +58,20 @@ function setAuthorization (token) {
   }])
 }
 
+function makeApolloClient () {
+  const websocketUrl = `wss://${serverUrl}`
+  const wsClient = new Client(websocketUrl)
+  const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(networkInterface, wsClient)
+
+  const clientGraphql = new ApolloClient({
+    networkInterface: networkInterfaceWithSubscriptions,
+    initialState: {}
+  })
+  return clientGraphql
+}
+
+let client = makeApolloClient()
+
 class ApolloContainer extends Component {
   render () {
     return (
@@ -69,4 +82,4 @@ class ApolloContainer extends Component {
   }
 }
 
-export { ApolloContainer, client, setAuthorization, serverUrl, scapholdToken }
+export { ApolloContainer, client, setAuthorization, serverUrl }
