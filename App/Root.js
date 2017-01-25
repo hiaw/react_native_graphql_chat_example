@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import LoginContainer from './Components/LoginContainer.js'
-import { ApolloContainer } from './Components/ApolloContainer.js'
+import LoginContainer from './Containers/LoginContainer.js'
+import { ApolloContainer } from './Containers/ApolloContainer.js'
 
 export default class Root extends Component {
   render () {
