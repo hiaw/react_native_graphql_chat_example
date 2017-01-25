@@ -7,11 +7,9 @@ export default class CommentsView extends React.Component {
   constructor (props) {
     super(props)
 
-    console.log(props.getUser)
-
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
     this.state = {
-      dataSource: ds.cloneWithRows(['row 1', 'row 2'])
+      dataSource: ds.cloneWithRows(props.getUser.channels.edges)
     }
   }
 
@@ -21,15 +19,32 @@ export default class CommentsView extends React.Component {
     )
   }
 
+  _renderRow (rowData) {
+    let row = rowData.node
+    return (
+      <Text>{`${row.name} (${row.members.aggregations.count})`}</Text>
+    )
+  }
+
   render () {
     return (
-      <View>
+      <View style={styles.container}>
         <ListView
           dataSource={this.state.dataSource}
-          renderRow={(rowData) => <Text>{rowData}</Text>}
-      />
+          renderRow={(rowData) => this._renderRow(rowData)}
+        />
         <Button title='Create Channel' onPress={() => this.createChannel(true)} />
       </View>
     )
+  }
+}
+
+const styles = {
+  container: {
+    flex: 1,
+    paddingTop: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'lightblue'
   }
 }
