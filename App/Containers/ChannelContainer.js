@@ -16,8 +16,7 @@ class Channel extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      console.log(getChannel)
-      return <ChannelView getChannel={getChannel} />
+      return <ChannelView data={this.props.data} getChannel={getChannel} />
     }
   }
 }
@@ -25,9 +24,11 @@ class Channel extends React.Component {
 const ChannelQuery = gql`
   query ChannelQuery ( $id: ID! ) {
     getChannel (id: $id) {
+      id
       messages {
         edges {
           node {
+            id
             content
             author {
               username
