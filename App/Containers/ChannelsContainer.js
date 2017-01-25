@@ -5,9 +5,11 @@ import gql from 'graphql-tag'
 
 import ChannelsView from '../Components/ChannelsView.js'
 
+import store from '../Model/MainStore.js'
+
 class Channels extends React.Component {
   render () {
-    const { loading, viewer, error } = this.props.data
+    const { loading, getUser, error } = this.props.data
 
     if (loading) {
       return <Text>Loading</Text>
@@ -16,21 +18,26 @@ class Channels extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      return <ChannelsView viewer={viewer} />
+      return <ChannelsView getUser={getUser} />
     }
   }
 }
 
 const UserQuery = gql`
-  query ChannelQuery {
-    viewer {
-      allChannels {
-        edges {
-          node {
-            messages {
-              edges {
-                node {
-                  content
+  query UserQuery ( $id: ID! ) {
+    getUser (id: $id) {
+        channels {
+          edges {
+            node {
+              name
+              members {
+                aggregations {
+                  count
+                }
+              }
+              messages {
+                aggregations {
+                  count
                 }
               }
             }
@@ -38,19 +45,14 @@ const UserQuery = gql`
         }
       }
     }
-  }
 `
 
 export default class ChannelsContainer extends React.Component {
   render () {
-    if (this.props.id === '') {
-      return <ChannelView />
-    }
-
     let options = {
       options: {
         variables: {
-          id: this.props.id
+          id: store.userDevice.scaphold_user_id
         }
       }
     }
