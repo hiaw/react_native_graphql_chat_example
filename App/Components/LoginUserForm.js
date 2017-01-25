@@ -6,6 +6,8 @@ import { observer } from 'mobx-react'
 import loginUser from '../Auth/LoginUser.js'
 import registerUser from '../Auth/RegisterUser.js'
 
+import store from '../Model/MainStore.js'
+
 @observer
 export default class LoginUserForm extends Component {
   @observable registering = false
@@ -24,11 +26,19 @@ export default class LoginUserForm extends Component {
       registerUser(this.loginEmail, this.loginPassword)
         .then(res => {
           console.log(res)
+          if (res.data.createUser.token) {
+            store.userDevice.scaphold_access_token = res.data.createUser.token
+            store.userDevice.scaphold_user_id = res.data.createUser.changedUser.id
+          }
         })
     } else {
       loginUser(this.loginEmail, this.loginPassword)
         .then(res => {
           console.log(res)
+          if (res.data.loginUser.token) {
+            store.userDevice.scaphold_access_token = res.data.loginUser.token
+            store.userDevice.scaphold_user_id = res.data.loginUser.user.id
+          }
         })
     }
   }
