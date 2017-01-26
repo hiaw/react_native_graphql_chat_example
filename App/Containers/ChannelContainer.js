@@ -62,7 +62,9 @@ class Channel extends React.Component {
       return <Text>Error</Text>
     } else {
       let messages = getChannel.messages.edges.map((message) => (
-        <MessageView key={message.node.id} content={message.node.content} />
+        <MessageView key={message.node.id}
+          username={message.node.author.username}
+          content={message.node.content} />
       ))
 
       return (
