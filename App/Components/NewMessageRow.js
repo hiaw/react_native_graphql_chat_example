@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
 import { View, TextInput, Button } from 'react-native'
+import { observable, computed } from 'mobx'
+import { observer } from 'mobx-react'
 
+@observer
 export default class NewMessageRow extends Component {
-  constructor () {
-    super()
-    this.state = {
-      message: 'New Message'
-    }
-  }
+  @observable message = 'New Message'
 
   sendMessage () {
-    this.props.createMessage(this.props.data.getChannel.id, this.state.message)
+    this.props.createMessage(this.props.data.getChannel.id, this.message)
   }
 
   render () {
@@ -20,8 +18,8 @@ export default class NewMessageRow extends Component {
           multiline
           style={styles.textInput}
           placeholder='Message'
-          defaultValue={this.state.message}
-          onChangeText={(message) => this.setState({message})}
+          defaultValue={this.message}
+          onChangeText={(message) => this.message = message}
         />
         <Button
           onPress={() => this.sendMessage()}
