@@ -9,6 +9,8 @@ import LoginContainer from '../Containers/LoginContainer.js'
 import ChannelsContainer from '../Containers/ChannelsContainer.js'
 import ChannelContainer from '../Containers/ChannelContainer.js'
 
+import store from '../Model/MainStore.js'
+
 export default class NavigationRouter extends Component {
   componentWillMount () {
     AsyncStorage.getItem('userDevice', (err, result) => {
@@ -29,12 +31,19 @@ export default class NavigationRouter extends Component {
     })
   }
 
+  logout () {
+    store.userDevice.scaphold_access_token = ''
+    store.userDevice.scaphold_user_id = ''
+    Actions.pop()
+  }
+
   render () {
     return (
       <ApolloContainer>
         <Router>
           <Scene key='login' component={LoginContainer} hideNavBar />
-          <Scene key='channels' component={ChannelsContainer} hideNavBar={false} />
+          <Scene key='channels' component={ChannelsContainer} hideNavBar={false}
+            rightTitle='Logout' onRight={() => this.logout()} />
           <Scene key='channelView' component={ChannelContainer} hideNavBar={false} />
         </Router>
       </ApolloContainer>

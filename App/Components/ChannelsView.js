@@ -8,10 +8,10 @@ export default class ChannelsView extends React.Component {
     AlertIOS.prompt('Channel name', 'Give the new channel a name',
       text => this.props.createChannel(text)
         .then((res) => {
-          console.log(res)
+          /* console.log(res) */
           this.props.addUserToChannel(res.data.createChannel.changedChannel.id)
             .then(res => {
-              console.log(res)
+              /* console.log(res) */
               this.props.data.refetch()
             })
         })
