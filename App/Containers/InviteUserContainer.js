@@ -3,6 +3,7 @@ import { View, Text } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import { graphql, compose } from 'react-apollo'
 import { Actions } from 'react-native-router-flux'
+import _ from 'lodash'
 
 import { AllUsersQuery } from '../Auth/InviteUsersQuery.js'
 import { AddUserToChannelMutation } from '../Auth/ChannelsQuery.js'
@@ -16,7 +17,7 @@ class InviteUser extends React.Component {
   }
 
   render () {
-    const { loading, viewer, error } = this.props.data
+    const { loading, viewer, getChannel, error } = this.props.data
 
     if (loading) {
       return <Text>Loading</Text>
@@ -25,14 +26,26 @@ class InviteUser extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      /* console.log(viewer) */
+      let existingChannelMembers = getChannel.members.edges.map((row) => {
+        return {
+          username: row.node.username,
+          id: row.node.id }
+      })
+      let allMembers = viewer.allUsers.edges.map((row) => {
+        return {
+          username: row.node.username,
+          id: row.node.id }
+      })
+
+      let uninvitedUser = _.differenceBy(allMembers, existingChannelMembers, 'id')
+
       return (
         <View style={styles.container}>
           <List>
             {
-            viewer.allUsers.edges.map((row, i) => (
-              <ListItem key={i} title={`${row.node.username}`}
-                onPress={() => this.selectUser(row.node.id)} />
+            uninvitedUser.map((row, i) => (
+              <ListItem key={i} title={`${row.username}`}
+                onPress={() => this.selectUser(row.id)} />
               ))
           }
           </List>
@@ -43,7 +56,15 @@ class InviteUser extends React.Component {
 }
 
 const InviteUsersContainer = compose(
-  graphql(AllUsersQuery, {}),
+  graphql(AllUsersQuery, {
+    options: (props) => {
+      return {
+        variables: {
+          id: props.channelId
+        }
+      }
+    }
+  }),
   graphql(AddUserToChannelMutation, {
     props: ({ mutate }) => ({
       addUserToChannel: (id, channelId) => mutate({ variables: { input: {
