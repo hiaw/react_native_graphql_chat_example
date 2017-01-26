@@ -8,6 +8,62 @@ import ChannelView from '../Components/ChannelView.js'
 import store from '../Model/MainStore.js'
 
 class Channel extends React.Component {
+
+  subscribeToNewMessages () {
+    this.subscription = this.props.data.subscribeToMore({
+      document: gql`
+        subscription newMessages($subscriptionFilter:MessageSubscriptionFilter) {
+          subscribeToMessage(mutations:[createMessage], filter: $subscriptionFilter) {
+            value {
+              id
+              content
+              createdAt
+              author {
+                id
+                username
+              }
+            }
+          }
+        }
+      `,
+      variables: {
+        subscriptionFilter: {
+          channelId: {
+            eq: this.props.id
+          }
+        }
+      },
+      updateQuery: (prev, { subscriptionData }) => {
+        const newEdges = [
+          ...prev.getChannel.messages.edges,
+          {
+            node: {
+              ...subscriptionData.data.subscribeToMessage.value
+            }
+          }
+        ]
+        return {
+          getChannel: {
+            messages: {
+              edges: newEdges
+            }
+          }
+        }
+      }
+    })
+  }
+
+  componentWillReceiveProps (newProps) {
+    if (!newProps.data.loading &&
+      newProps.data.getChannel) {
+      if (!this.props.data.getChannel ||
+        newProps.data.getChannel.id !== this.props.data.getChannel.id) {
+        // If we change channels, subscribe to the new channel
+        this.subscribeToNewMessages()
+      }
+    }
+  }
+
   render () {
     const { loading, getChannel, error } = this.props.data
 
@@ -75,13 +131,3 @@ const ChannelContainer = compose(
 )(Channel)
 
 export default ChannelContainer
-
-/* subscription SubscribeToNewMessage($messageFilter: MessageWhereArgs) {
- *     subscribeToNewMessage(mutations:[createMessage], where: $messageFilter) {
- *         mutation
- *         value {
- *             id
- *             content
- *         }
- *     }
- * } */
