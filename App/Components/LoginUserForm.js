@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, TextInput, Button } from 'react-native'
 import { observable, computed } from 'mobx'
 import { observer } from 'mobx-react'
+import { Actions } from 'react-native-router-flux'
 
 import store from '../Model/MainStore.js'
 
@@ -26,6 +27,7 @@ export default class LoginUserForm extends Component {
           if (res.data.createUser.token) {
             store.userDevice.scaphold_access_token = res.data.createUser.token
             store.userDevice.scaphold_user_id = res.data.createUser.changedUser.id
+            Actions.channels()
           }
         })
     } else {
@@ -35,6 +37,7 @@ export default class LoginUserForm extends Component {
           if (res.data.loginUser.token) {
             store.userDevice.scaphold_access_token = res.data.loginUser.token
             store.userDevice.scaphold_user_id = res.data.loginUser.user.id
+            Actions.channels()
           }
         })
     }
