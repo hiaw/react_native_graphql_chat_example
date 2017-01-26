@@ -27,7 +27,9 @@ export default class LoginUserForm extends Component {
           if (res.data.createUser.token) {
             store.userDevice.scaphold_access_token = res.data.createUser.token
             store.userDevice.scaphold_user_id = res.data.createUser.changedUser.id
-            Actions.channels()
+            let username = res.data.loginUser.user.username
+            store.userDevice.scaphold_username = username
+            Actions.channels({title: username})
           }
         })
     } else {
@@ -37,7 +39,9 @@ export default class LoginUserForm extends Component {
           if (res.data.loginUser.token) {
             store.userDevice.scaphold_access_token = res.data.loginUser.token
             store.userDevice.scaphold_user_id = res.data.loginUser.user.id
-            Actions.channels()
+            let username = res.data.loginUser.user.username
+            store.userDevice.scaphold_username = username
+            Actions.channels({title: username})
           }
         })
     }
