@@ -13,25 +13,25 @@ import InviteUserContainer from '../Containers/InviteUserContainer.js'
 import store from '../Model/MainStore.js'
 
 export default class NavigationRouter extends Component {
-  /* componentWillMount () {
-   *   AsyncStorage.getItem('userDevice', (err, result) => {
-   *     if (err) {
-   *     } else {
-   *       let results = JSON.parse(result)
-   *       if (results) {
-   *         let id = results.scaphold_user_id
-   *         if (id !== '') {
-   *           Actions.channels({type: ActionConst.REPLACE})
-   *         }
-   *         let token = results.scaphold_access_token
-   *         if (token !== '') {
-   *           setAuthorization(token)
-   *         }
-   *       }
-   *     }
-   *   })
-   * }
-   */
+  componentWillMount () {
+    AsyncStorage.getItem('userDevice', (err, result) => {
+      if (err) {
+      } else {
+        let results = JSON.parse(result)
+        if (results) {
+          let id = results.scaphold_user_id
+          if (id !== '') {
+            Actions.channels({type: ActionConst.REPLACE})
+          }
+          let token = results.scaphold_access_token
+          if (token !== '') {
+            setAuthorization(token)
+          }
+        }
+      }
+    })
+  }
+
   logout () {
     store.userDevice.scaphold_access_token = ''
     store.userDevice.scaphold_user_id = ''
@@ -46,7 +46,7 @@ export default class NavigationRouter extends Component {
           <Scene key='channels' component={ChannelsContainer} hideNavBar={false}
             rightTitle='Logout' onRight={() => this.logout()} />
           <Scene key='channelView' component={ChannelContainer} />
-          <Scene key='inviteUser' title='Invite User' component={InviteUserContainer} initial />
+          <Scene key='inviteUser' title='Invite User' component={InviteUserContainer} />
         </Router>
       </ApolloContainer>
     )

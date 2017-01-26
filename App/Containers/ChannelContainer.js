@@ -1,6 +1,7 @@
 import React from 'react'
-import { View, Text } from 'react-native'
+import { View, Text, Button } from 'react-native'
 import { graphql, compose } from 'react-apollo'
+import { Actions } from 'react-native-router-flux'
 import { observable } from 'mobx'
 import { observer } from 'mobx-react'
 
@@ -53,6 +54,10 @@ class Channel extends React.Component {
     }
   }
 
+  showInviteUser() {
+    Actions.inviteUser({channelId: this.props.id})
+  }
+
   render () {
     const { loading, getChannel, error } = this.props.data
 
@@ -71,6 +76,8 @@ class Channel extends React.Component {
 
       return (
         <View style={styles.container}>
+          <Button title='Invite User'
+            onPress={() => this.showInviteUser()} />
           <View style={styles.msgContainer}>
             {messages}
           </View>

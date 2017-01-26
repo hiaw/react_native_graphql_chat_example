@@ -18,8 +18,8 @@ export default class ChannelsView extends React.Component {
     )
   }
 
-  goToChannel (id) {
-    Actions.channelView({id: id})
+  goToChannel (id, name) {
+    Actions.channelView({id: id, title: name})
   }
 
   render () {
@@ -29,7 +29,7 @@ export default class ChannelsView extends React.Component {
           {
             this.props.getUser.channels.edges.map((row, i) => (
               <ListItem key={i} title={`${row.node.name} (${row.node.members.aggregations.count})`}
-                onPress={() => this.goToChannel(row.node.id)}
+                onPress={() => this.goToChannel(row.node.id, row.node.name)}
                 badge={{value: row.node.messages.aggregations.count}} />
               ))
           }

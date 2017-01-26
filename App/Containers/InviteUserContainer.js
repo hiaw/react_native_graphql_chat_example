@@ -2,13 +2,17 @@ import React from 'react'
 import { View, Text } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import { graphql, compose } from 'react-apollo'
+import { Actions } from 'react-native-router-flux'
 
 import { AllUsersQuery } from '../Auth/InviteUsersQuery.js'
-
-import store from '../Model/MainStore.js'
+import { AddUserToChannelMutation } from '../Auth/ChannelsQuery.js'
 
 class InviteUser extends React.Component {
-  selectUser () {
+  selectUser (id) {
+    console.log('selecting user')
+    console.log(id)
+    this.props.addUserToChannel(id, this.props.channelId)
+      .then(res => Actions.pop())
   }
 
   render () {
@@ -21,7 +25,7 @@ class InviteUser extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      console.log(viewer)
+      /* console.log(viewer) */
       return (
         <View style={styles.container}>
           <List>
@@ -39,14 +43,14 @@ class InviteUser extends React.Component {
 }
 
 const InviteUsersContainer = compose(
-  graphql(AllUsersQuery, {
-    options: (props) => {
-      return {
-        variables: {
-          id: store.userDevice.scaphold_user_id
-        }
-      }
-    }
+  graphql(AllUsersQuery, {}),
+  graphql(AddUserToChannelMutation, {
+    props: ({ mutate }) => ({
+      addUserToChannel: (id, channelId) => mutate({ variables: { input: {
+        userId: id,
+        channelId: channelId
+      }} })
+    })
   })
 )(InviteUser)
 
