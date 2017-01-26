@@ -5,7 +5,7 @@ import { observer } from 'mobx-react'
 
 @observer
 export default class NewMessageRow extends Component {
-  @observable message = 'New Message'
+  @observable message = ''
 
   sendMessage () {
     this.props.createMessage(this.props.data.getChannel.id, this.message)

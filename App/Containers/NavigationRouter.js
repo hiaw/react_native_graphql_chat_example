@@ -37,6 +37,10 @@ export default class NavigationRouter extends Component {
     Actions.pop()
   }
 
+  inviteUser () {
+    store.navigationState.modalVisible = true
+  }
+
   render () {
     return (
       <ApolloContainer>
@@ -44,7 +48,8 @@ export default class NavigationRouter extends Component {
           <Scene key='login' component={LoginContainer} hideNavBar />
           <Scene key='channels' component={ChannelsContainer} hideNavBar={false}
             rightTitle='Logout' onRight={() => this.logout()} />
-          <Scene key='channelView' component={ChannelContainer} hideNavBar={false} />
+          <Scene key='channelView' component={ChannelContainer}
+            rightTitle='Invite' onRight={() => this.inviteUser()} />
         </Router>
       </ApolloContainer>
     )

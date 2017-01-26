@@ -1,6 +1,8 @@
 import React from 'react'
 import { View, Text } from 'react-native'
 import { graphql, compose } from 'react-apollo'
+import { observer } from 'mobx-react'
+import ModalPicker from 'react-native-modal-picker'
 
 import NewMessageRow from '../Components/NewMessageRow.js'
 import MessageView from '../Components/MessageView.js'
@@ -8,8 +10,14 @@ import { ChannelQuery, CreateMessageMutation, SubscribeMessage } from '../Auth/C
 
 import store from '../Model/MainStore.js'
 
-class Channel extends React.Component {
+const selectionData = [
+  { key: 'male', label: 'Male' },
+  { key: 'female', label: 'Female' },
+  { key: 'secret', label: 'Secret' }
+]
 
+@observer
+class Channel extends React.Component {
   subscribeToNewMessages () {
     this.subscription = this.props.data.subscribeToMore({
       document: SubscribeMessage,
@@ -51,6 +59,10 @@ class Channel extends React.Component {
     }
   }
 
+  inviteUser () {
+    console.log('inviting user')
+  }
+
   render () {
     const { loading, getChannel, error } = this.props.data
 
@@ -69,6 +81,13 @@ class Channel extends React.Component {
 
       return (
         <View style={styles.container}>
+          <ModalPicker
+            ref='localityPicker'
+            cancelText='Cancel'
+            data={selectionData}
+            onChange={(selection) => this.inviteUser(selection.key)} >
+            <Text />
+          </ModalPicker>
           <View style={styles.msgContainer}>
             {messages}
           </View>
