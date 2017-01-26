@@ -1,8 +1,9 @@
 import React from 'react'
-import { Text } from 'react-native'
+import { View, Text } from 'react-native'
 import { graphql, compose } from 'react-apollo'
 
-import ChannelView from '../Components/ChannelView.js'
+import NewMessageRow from '../Components/NewMessageRow.js'
+import MessageView from '../Components/MessageView.js'
 import { ChannelQuery, CreateMessageMutation, SubscribeMessage } from '../Auth/ChannelQuery.js'
 
 import store from '../Model/MainStore.js'
@@ -60,7 +61,19 @@ class Channel extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      return <ChannelView {...this.props} getChannel={getChannel} />
+      let messages = getChannel.messages.edges.map((message) => (
+        <MessageView key={message.node.id} content={message.node.content} />
+      ))
+
+      return (
+        <View style={styles.container}>
+          <View style={styles.msgContainer}>
+            {messages}
+          </View>
+
+          <NewMessageRow {...this.props} />
+        </View>
+      )
     }
   }
 }
@@ -88,3 +101,20 @@ const ChannelContainer = compose(
 )(Channel)
 
 export default ChannelContainer
+
+const styles = {
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'lightblue'
+  },
+  msgContainer: {
+    flex: 1,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    justifyContent: 'flex-end',
+    alignSelf: 'stretch',
+    backgroundColor: 'antiquewhite'
+  }
+}
