@@ -3,9 +3,6 @@ import { View, TextInput, Button } from 'react-native'
 import { observable, computed } from 'mobx'
 import { observer } from 'mobx-react'
 
-import loginUser from '../Auth/LoginUser.js'
-import registerUser from '../Auth/RegisterUser.js'
-
 import store from '../Model/MainStore.js'
 
 @observer
@@ -23,7 +20,7 @@ export default class LoginUserForm extends Component {
 
   submit () {
     if (this.registering) {
-      registerUser(this.loginEmail, this.loginPassword)
+      this.props.registerUser(this.loginEmail, this.loginPassword)
         .then(res => {
           console.log(res)
           if (res.data.createUser.token) {
@@ -32,7 +29,7 @@ export default class LoginUserForm extends Component {
           }
         })
     } else {
-      loginUser(this.loginEmail, this.loginPassword)
+      this.props.loginUser(this.loginEmail, this.loginPassword)
         .then(res => {
           console.log(res)
           if (res.data.loginUser.token) {
