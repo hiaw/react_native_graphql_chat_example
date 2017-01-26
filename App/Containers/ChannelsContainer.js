@@ -1,9 +1,9 @@
 import React from 'react'
 import { Text } from 'react-native'
-import { graphql } from 'react-apollo'
-import gql from 'graphql-tag'
+import { graphql, compose } from 'react-apollo'
 
 import ChannelsView from '../Components/ChannelsView.js'
+import { UserChannelQuery, CreateChannelMutation, AddUserToChannelMutation } from '../Auth/ChannelsQuery.js'
 
 import store from '../Model/MainStore.js'
 
@@ -18,50 +18,36 @@ class Channels extends React.Component {
       console.log(JSON.stringify(error))
       return <Text>Error</Text>
     } else {
-      return <ChannelsView getUser={getUser} />
+      return <ChannelsView {...this.props} getUser={getUser} />
     }
   }
 }
 
-const UserQuery = gql`
-  query UserQuery ( $id: ID! ) {
-    getUser (id: $id) {
-        channels {
-          edges {
-            node {
-              id
-              name
-              members {
-                aggregations {
-                  count
-                }
-              }
-              messages {
-                aggregations {
-                  count
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-`
-
-export default class ChannelsContainer extends React.Component {
-  render () {
-    let options = {
-      options: {
+const ChannelsContainer = compose(
+  graphql(UserChannelQuery, {
+    options: (props) => {
+      return {
         variables: {
           id: store.userDevice.scaphold_user_id
         }
       }
     }
+  }),
+  graphql(CreateChannelMutation, {
+    props: ({ mutate }) => ({
+      createChannel: (name) => mutate({ variables: { input: {
+        name: name
+      }} })
+    })
+  }),
+  graphql(AddUserToChannelMutation, {
+    props: ({ mutate }) => ({
+      addUserToChannel: (channelId) => mutate({ variables: { input: {
+        userId: store.userDevice.scaphold_user_id,
+        channelId: channelId
+      }} })
+    })
+  })
+)(Channels)
 
-    let ViewWithData = graphql(UserQuery, options)(Channels)
-
-    return (
-      <ViewWithData />
-    )
-  }
-}
+export default ChannelsContainer

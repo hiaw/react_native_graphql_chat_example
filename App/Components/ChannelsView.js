@@ -3,12 +3,18 @@ import { View, Button, AlertIOS } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import { Actions } from 'react-native-router-flux'
 
-import createChannel from '../Auth/CreateChannel.js'
-
 export default class ChannelsView extends React.Component {
   createChannel () {
     AlertIOS.prompt('Channel name', 'Give the new channel a name',
-      text => createChannel(text)
+      text => this.props.createChannel(text)
+        .then((res) => {
+          console.log(res)
+          this.props.addUserToChannel(res.data.createChannel.changedChannel.id)
+            .then(res => {
+              console.log(res)
+              this.props.data.refetch()
+            })
+        })
     )
   }
 
