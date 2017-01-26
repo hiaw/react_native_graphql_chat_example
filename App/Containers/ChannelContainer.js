@@ -86,7 +86,13 @@ const ChannelContainer = compose(
       return {
         returnPartialData: true,
         variables: {
-          id: props.id
+          id: props.id,
+          messageOrder: [
+            {
+              field: 'createdAt',
+              direction: 'ASC'
+            }
+          ]
         }
       }
     }

@@ -1,14 +1,15 @@
 import gql from 'graphql-tag'
 
 export const ChannelQuery = gql`
-  query ChannelQuery ( $id: ID! ) {
+  query ChannelQuery ( $id: ID!, $messageOrder: [MessageOrderByArgs]) {
     getChannel (id: $id) {
       id
-      messages {
+      messages (last: 50, orderBy: $messageOrder) {
         edges {
           node {
             id
             content
+            createdAt
             author {
               username
             }
