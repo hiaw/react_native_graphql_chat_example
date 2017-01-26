@@ -1,9 +1,9 @@
 import React from 'react'
 import { Text } from 'react-native'
 import { graphql, compose } from 'react-apollo'
-import gql from 'graphql-tag'
 
 import ChannelView from '../Components/ChannelView.js'
+import { ChannelQuery, CreateMessageMutation, SubscribeMessage } from '../Auth/ChannelQuery.js'
 
 import store from '../Model/MainStore.js'
 
@@ -11,21 +11,7 @@ class Channel extends React.Component {
 
   subscribeToNewMessages () {
     this.subscription = this.props.data.subscribeToMore({
-      document: gql`
-        subscription newMessages($subscriptionFilter:MessageSubscriptionFilter) {
-          subscribeToMessage(mutations:[createMessage], filter: $subscriptionFilter) {
-            value {
-              id
-              content
-              createdAt
-              author {
-                id
-                username
-              }
-            }
-          }
-        }
-      `,
+      document: SubscribeMessage,
       variables: {
         subscriptionFilter: {
           channelId: {
@@ -78,35 +64,6 @@ class Channel extends React.Component {
     }
   }
 }
-
-const ChannelQuery = gql`
-  query ChannelQuery ( $id: ID! ) {
-    getChannel (id: $id) {
-      id
-      messages {
-        edges {
-          node {
-            id
-            content
-            author {
-              username
-            }
-          }
-        }
-      }
-    }
-  }
-`
-
-const CreateMessageMutation = gql`
-  mutation CreateMessage ($input: CreateMessageInput!){
-    createMessage (input: $input) {
-      changedMessage {
-        id
-      }
-    }
-  }
-`
 
 const ChannelContainer = compose(
   graphql(ChannelQuery, {
