@@ -9,16 +9,17 @@ export default class NewMessageRow extends Component {
 
   sendMessage () {
     this.props.createMessage(this.props.data.getChannel.id, this.message)
+    .then(res => this.message = '')
   }
 
   render () {
     return (
       <View style={styles.row}>
         <TextInput
-          multiline
           style={styles.textInput}
           placeholder='Message'
           defaultValue={this.message}
+          onEndEditing={() => this.sendMessage()}
           onChangeText={(message) => this.message = message}
         />
         <Button
